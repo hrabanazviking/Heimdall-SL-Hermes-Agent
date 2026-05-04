@@ -28,25 +28,6 @@ The project name is metaphorically perfect: Heimdall is the watchman who stands 
 
 ---
 
-## Directory Structure
-
-heimdall/
-├── README.md                     # The saga begins
-├── docs/
-│   ├── architecture/
-│   │   └── Heimdall_Architecture_Game_Plan.md   # Our 118KB tapestry
-│   ├── research/
-│   │   ├── SL_Headless_Hermes_Agent_Architecture.md
-│   │   ├── SL_Heimdall_Full_Architecture_Proposal.md
-│   │   ├── LibreMetaverse_Deep_Dive_Analysis.md
-│   │   └── Radegast_Deep_Dive_Analysis.md
-│   └── sacred-coding.md          # The Nine Principles
-├── src/
-│   └── (code lives here later)
-└── .gitignore
-
----
-
 ## Cross-Platform Pledge
 
 Mythic Vibe CLI runs on **Windows, macOS, and Linux** without per-OS branches. Every dependency is open-source. We deliberately avoid:
