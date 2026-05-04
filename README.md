@@ -30,7 +30,7 @@ The project name is metaphorically perfect: Heimdall is the watchman who stands 
 
 ## Cross-Platform Pledge
 
-Mythic Vibe CLI runs on **Windows, macOS, and Linux** without per-OS branches. Every dependency is open-source. We deliberately avoid:
+Heimdall Second Life Hermes Agent runs on **Windows, macOS, and Linux** without per-OS branches. Every dependency is open-source. We deliberately avoid:
 
 - proprietary platform SDKs
 - OS-specific signal handlers (no `SIGUSR1` tricks; subprocess control uses `terminate()` / `kill()` / `wait(timeout=...)`)
