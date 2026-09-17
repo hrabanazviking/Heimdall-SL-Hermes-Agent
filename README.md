@@ -60,5 +60,15 @@ The author may decline to provide official binaries, installers, hosted services
 Any third party who forks, packages, redistributes, deploys, hosts, or otherwise makes this software available does so independently and is solely responsible for compliance with applicable law, platform policy, and distribution requirements in their own jurisdiction and context.
 
 ---
+
+## ☕ Support the Project
+
+If you enjoy my open-source projects and want to help support continued development, research, testing, and experimentation, you can leave a tip through PayPal:
+
+**[Support my work on PayPal.Me](https://www.paypal.com/paypalme/volmarrwyrd)**
+
+Support is always appreciated, but never required. Using, sharing, testing, contributing to, or starring the projects helps too. 🖤⚙️ᚱ
+
+---
  
 
