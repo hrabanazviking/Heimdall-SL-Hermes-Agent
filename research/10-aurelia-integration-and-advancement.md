@@ -242,4 +242,8 @@ Component writes follow the bridge's existing discipline: sync on tick (throttle
 
 ---
 
+## Addendum (2026-10-27, Volmarr's design order)
+
+**Optional deep-awareness layer.** Aurelia's current awareness is primitive (rule/state-based). Volmarr's order: when Aurelia runs on purplelongship (the Heimdall host, RTX 2060), add an OPTIONAL feature — a small, fast, local, uncensored model that tracks the effects happening to Yrsa and how they affect her, for greater accuracy than the primitive awareness alone. Design placement, per the study's own discipline: the primitive awareness remains the always-on baseline and fallback; the model is an enrichment layer under the accuracy phase (interpreting events into nuanced, cumulative effects), local-only (intimate telemetry never leaves the house), and never in the reflex/stop path — stops and responses answer at nerve speed while the model deepens the tracking alongside.
+
 *Study ends. Verified state: Part 1 and §2.1. Everything from §2.2 onward is proposal awaiting Volmarr's word — no code was written, no README touched, nothing pushed.*
