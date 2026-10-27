@@ -52,6 +52,8 @@ The spring corpus was designed for a different inhabitant and a different hearth
 4. **Ambient-mode autonomy bounds** — what Yrsa may do in-world while Volmarr is not attending (greet friends? wander a home region? nothing beyond presence?).
 5. **Heimdall's licence** — the repository README still records it as to-be-determined.
 
+**Settled since writing (Volmarr's rulings, 2026-10-26, later that night):** (1) *Scripted-agent flagging* — approved: "flagging your avatar that way when you are in it is easy to do, one switch." Treated as a solved precondition. (2) *Premium* — resolved from the other side: Volmarr's own avatar holds **Premium Plus**, and the project's Experience (the companion's persistent permissions + KVP store, per doc 07) will be created and owned on his avatar for Yrsa's use; her account needs no premium for it. Decisions 3–5 remain open.
+
 ## 6. The recommended road in (when Volmarr gives the word)
 
 1. **Phase I0** — the offline WYRD replay harness (doc 04): one synthetic region living in WYRD, Oracle queries answering, truth-ownership rules proven by tests. No SL account needed.
