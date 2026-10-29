@@ -7,10 +7,24 @@ law that coarse radar dots are never presented as named people.
 Plus the Astrid-Law login sweep
 (:mod:`heimdall.awareness.login_sweep`, Phase 3 slice 2, doc 05 §5):
 no silent shut-out — every login failure is loud, surfaced, and
-retried or explicitly blocked.
+retried or explicitly blocked. And the LSL companion HUD ingest
+(:mod:`heimdall.awareness.hud_ingest`, Phase 3 slice 3, doc 03
+§7.6): HUD1 digests from the worn sense organ, feeding the coarse
+presence tier only, fail-closed.
 """
 
 from .digest import HeardEntry, SceneDigestBuilder, build_scene_digest
+from .hud_ingest import (
+    FORMAT_TAG,
+    HudConditions,
+    HudDigest,
+    HudEvent,
+    HudIngest,
+    HudIngestResult,
+    HudPayloadError,
+    HudPlace,
+    parse_hud_payload,
+)
 from .login_sweep import LoginRecord, LoginSupervisor, LoginSweepConfig
 from .presence import (
     RANGE_BANDS,
@@ -21,10 +35,18 @@ from .presence import (
 )
 
 __all__ = [
+    "FORMAT_TAG",
     "RANGE_BANDS",
     "CoarseEntry",
     "FullAvatar",
     "HeardEntry",
+    "HudConditions",
+    "HudDigest",
+    "HudEvent",
+    "HudIngest",
+    "HudIngestResult",
+    "HudPayloadError",
+    "HudPlace",
     "LoginRecord",
     "LoginSupervisor",
     "LoginSweepConfig",
@@ -32,4 +54,5 @@ __all__ = [
     "SceneDigestBuilder",
     "band_for_distance",
     "build_scene_digest",
+    "parse_hud_payload",
 ]
