@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Heimdall.Core — the Second Life body (Phase 2, slice 2).
+       LibreMetaverse pinned at 2.6.4: the version the architecture
+       corpus (Heimdall_Architecture_Game_Plan.md §6.2) targets and
+       whose API surface was verified by reflection on the build host
+       2026-10-29. The 3.x line split the packages and is not targeted
+       by any corpus code; do not bump without a corpus-wide review. -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RootNamespace>Heimdall.Core</RootNamespace>
+    <AssemblyName>Heimdall.Core</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="LibreMetaverse" Version="2.6.4" />
+  </ItemGroup>
+
+  <!-- The test project lives under tests/; keep its sources out of
+       this project's default glob. -->
+  <ItemGroup>
+    <Compile Remove="tests\**" />
+    <None Remove="tests\**" />
+    <Content Remove="tests\**" />
+  </ItemGroup>
+
+</Project>
