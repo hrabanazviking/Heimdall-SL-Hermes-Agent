@@ -1,0 +1,37 @@
+# Heimdall Bifröst API — systemd USER unit template (Phase 2 slice 4).
+#
+# Native install only (no Docker, per standing law). Install as a
+# user unit:
+#
+#   mkdir -p ~/.config/systemd/user ~/.config/heimdall
+#   cp deploy/heimdall-api.service ~/.config/systemd/user/
+#   # edit WorkingDirectory / ExecStart paths below to the real checkout
+#   # provision the secret OUT OF BAND (never in this repo, never in
+#   # this unit — see deployment.md):
+#   #   ~/.config/heimdall/heimdall.env   (chmod 600)
+#   #     HEIMDALL_WS_SECRET=<provisioned out of band>
+#   #     HEIMDALL_WYRD_SINK=<module:Class for the WYRD sink>
+#   systemctl --user daemon-reload
+#   systemctl --user enable --now heimdall-api.service
+#
+# The runtime refuses to start without HEIMDALL_WS_SECRET and refuses
+# to run sinkless unless HEIMDALL_ALLOW_SINKLESS=1 is set explicitly —
+# both are deliberate fail-closed postures, not bugs.
+
+[Unit]
+Description=Heimdall Bifröst API (Second Life mind-bridge seam, Python side)
+After=network.target
+
+[Service]
+Type=simple
+# Adjust to the real checkout on the deployment host (purplelongship).
+WorkingDirectory=%h/heimdall/heimdall-api
+ExecStart=/usr/bin/python3 -m heimdall.runtime
+EnvironmentFile=%h/.config/heimdall/heimdall.env
+Restart=on-failure
+RestartSec=5
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=default.target
