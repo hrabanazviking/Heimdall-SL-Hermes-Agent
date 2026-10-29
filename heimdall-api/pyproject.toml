@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "heimdall-api"
 version = "0.1.0"
-description = "Heimdall Bifröst API — Python seam between Heimdall.Core (C#/LibreMetaverse) and the mind/WYRD layer. Phase 2 slice 1: NDJSON IPC client, event dispatcher, outbound safety governor."
+description = "Heimdall Bifröst API — Python seam between Heimdall.Core (C#/LibreMetaverse) and the mind/WYRD layer. Phase 2 slices 1+3: NDJSON IPC client, event dispatcher, outbound safety governor, §7.1 WebSocket server with HMAC auth."
 requires-python = ">=3.11"
 dependencies = []
 
