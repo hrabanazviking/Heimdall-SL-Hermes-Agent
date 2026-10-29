@@ -39,10 +39,12 @@ Fail-closed behaviour, by design:
   out of band by the operator and placed only in the host-side
   `EnvironmentFile`. The secret itself is **never** in this repo, in
   the unit file, or in any commit.
-- **The C# Heimdall.Core leg** — still pending: Phase 2 slice 2 is
-  blocked (no .NET SDK on the VM or purplelongship, native install
-  decision pending), so there is no Core process for the IPC
-  transport to talk to yet, and no event socket to pump from.
+- **The C# Heimdall.Core leg** — still pending: the Phase 2 slice 2
+  client is not built yet (its former blocker — no .NET SDK — was
+  lifted 2026-10-29 when .NET 8 SDK 8.0.427 was installed natively
+  on purplelongship at the operator's order), so there is no Core
+  process for the IPC transport to talk to yet, and no event socket
+  to pump from.
 - **Any Second Life login** — Phase 1 stays blocked: credentials are
   available only through the Secure Vault flow and none were
   available. No login has been attempted.
