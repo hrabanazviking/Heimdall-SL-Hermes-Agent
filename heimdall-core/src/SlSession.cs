@@ -8,7 +8,7 @@ namespace Heimdall.Core;
 /// the §7.3 Core event names. Every signature used here was verified
 /// by reflection against the pinned package on the build host
 /// (2026-10-29) — GridClient's managers are fields, login is
-/// <c>Network.Login(LoginParams)</c>, chat is
+/// <c>Network.LoginAsync(LoginParams)</c>, chat is
 /// <c>Self.Chat(string, int, ChatType, bool)</c>, IM arrives on
 /// <c>Self.IM</c>, and 2.6.4's appearance signal is
 /// <c>Appearance.AppearanceSet</c> (there is no AppearanceChanged
@@ -160,7 +160,26 @@ public sealed class SlSession : ISlSession
         {
             Start = _config.StartLocation,
         };
-        if (!_client.Network.Login(parms))
+        // 2.6.4's synchronous Login wrapper is obsolete (CS0618);
+        // the async-first API is the corpus-documented road (§5 of
+        // the LibreMetaverse deep dive), driven synchronously here
+        // because the seam's command loop is synchronous, with a
+        // bounded 30 s token so a hung login cannot wedge the Core.
+        bool loggedIn;
+        using (var loginTimeout = new CancellationTokenSource(TimeSpan.FromSeconds(30)))
+        {
+            try
+            {
+                loggedIn = _client.Network.LoginAsync(parms, loginTimeout.Token)
+                    .GetAwaiter().GetResult();
+            }
+            catch (Exception ex)
+            {
+                Emit("LoginFailed", new JsonObject { ["reason"] = ex.Message });
+                return "login_failed: " + ex.Message;
+            }
+        }
+        if (!loggedIn)
         {
             var why = _client.Network.LoginMessage;
             Emit("LoginFailed", new JsonObject { ["reason"] = why });
