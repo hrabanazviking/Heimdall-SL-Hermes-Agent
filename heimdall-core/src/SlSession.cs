@@ -155,6 +155,27 @@ public sealed class SlSession : ISlSession
     {
         if (_loggedIn) return null;
         if (!_config.HasCredentials) return "credentials_unavailable";
+        // DIAG: LibreMetaverse 2.6.4 masks every login failure behind
+        // LoginMessage "Canceled" for LoginAsync callers (its
+        // UpdateLoginStatus cancels the result task on Failed, and the
+        // await then overwrites the real message). The LoginProgress
+        // event still carries the true status/message/fail-key, so
+        // capture it and surface it in the seam's LoginFailed payload.
+        // The FIRST Failed progress message is the true one: the
+        // library fires a second Failed("Canceled") from LoginAsync's
+        // own catch, so later failures never overwrite it here.
+        var loginProgress = new System.Collections.Generic.List<string>();
+        string? lastFailure = null;
+        EventHandler<LoginProgressEventArgs> onLoginProgress = (_, e) =>
+        {
+            lock (loginProgress)
+            {
+                loginProgress.Add(e.Status + ": " + e.Message + " [key=" + e.FailReason + "]");
+                if (e.Status == LoginStatus.Failed && lastFailure == null) lastFailure = e.Message;
+            }
+        };
+        _client.Network.LoginProgress += onLoginProgress;
+        string Progress() => loginProgress.Count == 0 ? "(none)" : string.Join(" -> ", loginProgress);
         var parms = new LoginParams(_client, _config.FirstName!, _config.LastName!,
             _config.Password!, "Heimdall", "0.1.0", _config.LoginUri)
         {
@@ -175,13 +196,16 @@ public sealed class SlSession : ISlSession
             }
             catch (Exception ex)
             {
-                Emit("LoginFailed", new JsonObject { ["reason"] = ex.Message });
-                return "login_failed: " + ex.Message;
+                _client.Network.LoginProgress -= onLoginProgress;
+                var detail = (lastFailure ?? ex.Message) + " | progress: " + Progress();
+                Emit("LoginFailed", new JsonObject { ["reason"] = detail });
+                return "login_failed: " + detail;
             }
         }
+        _client.Network.LoginProgress -= onLoginProgress;
         if (!loggedIn)
         {
-            var why = _client.Network.LoginMessage;
+            var why = (lastFailure ?? _client.Network.LoginMessage) + " | key: " + _client.Network.LoginErrorKey + " | progress: " + Progress();
             Emit("LoginFailed", new JsonObject { ["reason"] = why });
             return "login_failed: " + why;
         }
