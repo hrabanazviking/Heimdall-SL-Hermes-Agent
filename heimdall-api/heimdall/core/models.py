@@ -57,6 +57,14 @@ CORE_EVENT_ALIASES: dict[str, str] = {
     "CallingCardOfferReceived": "calling_card_offer",
     "ScriptDialogReceived": "script_dialog",
     "ScriptPermissionRequest": "script_permission_request",
+    # F3 inventory vocabulary (census doc 15): an item arriving or
+    # changing, and a notecard arriving. The C# Core does not emit
+    # these yet — these names are the contract its F3 leg will
+    # speak, settled here so the seam side can be built and proven
+    # ahead of it (see awareness/inventory.py).
+    "InventoryItemReceived": "inventory_item",
+    "InventoryUpdated": "inventory_updated",
+    "NotecardReceived": "notecard_received",
     # API-form names (the §7.1 unsolicited format and the Phase I0
     # replay fixture both use these) converge on the same canonical
     # vocabulary. This map mirrors the alias set the WYRD bridge's
@@ -93,6 +101,9 @@ CORE_EVENT_ALIASES: dict[str, str] = {
     "calling_card_offer": "calling_card_offer",
     "script_dialog": "script_dialog",
     "script_permission_request": "script_permission_request",
+    "inventory_item": "inventory_item",
+    "inventory_updated": "inventory_updated",
+    "notecard_received": "notecard_received",
 }
 
 

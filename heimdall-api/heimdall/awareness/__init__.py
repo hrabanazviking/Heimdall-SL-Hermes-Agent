@@ -18,7 +18,12 @@ And the per-thread conversation log
 (:mod:`heimdall.awareness.conversations`, census doc 15 slice F2):
 chat/IM/group-chat held as attributed utterances in re-readable
 threads — outbound recorded only after Core confirmation,
-per-resident purge honoured.
+per-resident purge honoured. And inventory as a sense and a hand
+(:mod:`heimdall.awareness.inventory`, census doc 15 slice F3):
+items browsable by folder/kind, notecards read only from content
+that actually arrived, landmarks and gives as governor-ready
+commands recorded only after Core confirmation — and no delete
+path at all.
 """
 
 from .conversations import (
@@ -38,6 +43,7 @@ from .hud_ingest import (
     HudPlace,
     parse_hud_payload,
 )
+from .inventory import ITEM_KINDS, InventoryItem, InventoryStore
 from .login_sweep import LoginRecord, LoginSupervisor, LoginSweepConfig
 from .offers import (
     EVENT_KINDS,
@@ -57,6 +63,7 @@ __all__ = [
     "CONVERSATION_KINDS",
     "EVENT_KINDS",
     "FORMAT_TAG",
+    "ITEM_KINDS",
     "OFFER_KINDS",
     "RANGE_BANDS",
     "CoarseEntry",
@@ -70,6 +77,8 @@ __all__ = [
     "HudIngestResult",
     "HudPayloadError",
     "HudPlace",
+    "InventoryItem",
+    "InventoryStore",
     "LoginRecord",
     "LoginSupervisor",
     "LoginSweepConfig",
