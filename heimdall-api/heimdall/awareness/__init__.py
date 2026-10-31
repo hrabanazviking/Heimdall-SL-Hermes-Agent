@@ -10,7 +10,10 @@ no silent shut-out — every login failure is loud, surfaced, and
 retried or explicitly blocked. And the LSL companion HUD ingest
 (:mod:`heimdall.awareness.hud_ingest`, Phase 3 slice 3, doc 03
 §7.6): HUD1 digests from the worn sense organ, feeding the coarse
-presence tier only, fail-closed.
+presence tier only, fail-closed. And the pending-offers queue
+(:mod:`heimdall.awareness.offers`, census doc 15 slice F1, doc 03
+§6): incoming social offers held as decision events — hold-and-show,
+never silent auto-accept, debit permissions operator-gated.
 """
 
 from .digest import HeardEntry, SceneDigestBuilder, build_scene_digest
@@ -26,6 +29,12 @@ from .hud_ingest import (
     parse_hud_payload,
 )
 from .login_sweep import LoginRecord, LoginSupervisor, LoginSweepConfig
+from .offers import (
+    EVENT_KINDS,
+    OFFER_KINDS,
+    OffersQueue,
+    PendingOffer,
+)
 from .presence import (
     RANGE_BANDS,
     CoarseEntry,
@@ -35,7 +44,9 @@ from .presence import (
 )
 
 __all__ = [
+    "EVENT_KINDS",
     "FORMAT_TAG",
+    "OFFER_KINDS",
     "RANGE_BANDS",
     "CoarseEntry",
     "FullAvatar",
@@ -50,6 +61,8 @@ __all__ = [
     "LoginRecord",
     "LoginSupervisor",
     "LoginSweepConfig",
+    "OffersQueue",
+    "PendingOffer",
     "PresenceTracker",
     "SceneDigestBuilder",
     "band_for_distance",

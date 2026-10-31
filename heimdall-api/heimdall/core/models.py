@@ -44,6 +44,19 @@ CORE_EVENT_ALIASES: dict[str, str] = {
     "LoginFailed": "login_failed",
     "TeleportProgress": "teleport_progress",
     "TeleportCompleted": "teleport_completed",
+    # F1 offers vocabulary (doc 03 §6, census doc 15): the per-kind
+    # offer events and the generic OfferReceived form. The C# Core
+    # does not emit these yet — these names are the contract its F1
+    # leg will speak, settled here so the seam side can be built and
+    # proven ahead of it (see awareness/offers.py).
+    "OfferReceived": "offer_received",
+    "TeleportLureReceived": "teleport_lure",
+    "FriendshipOfferReceived": "friendship_offer",
+    "GroupInvitationReceived": "group_invite",
+    "InventoryOfferReceived": "inventory_offer",
+    "CallingCardOfferReceived": "calling_card_offer",
+    "ScriptDialogReceived": "script_dialog",
+    "ScriptPermissionRequest": "script_permission_request",
     # API-form names (the §7.1 unsolicited format and the Phase I0
     # replay fixture both use these) converge on the same canonical
     # vocabulary. This map mirrors the alias set the WYRD bridge's
@@ -72,6 +85,14 @@ CORE_EVENT_ALIASES: dict[str, str] = {
     "teleport_completed": "teleport_completed",
     "teleport_progress": "teleport_progress",
     "disconnected": "disconnected",
+    "offer_received": "offer_received",
+    "teleport_lure": "teleport_lure",
+    "friendship_offer": "friendship_offer",
+    "group_invite": "group_invite",
+    "inventory_offer": "inventory_offer",
+    "calling_card_offer": "calling_card_offer",
+    "script_dialog": "script_dialog",
+    "script_permission_request": "script_permission_request",
 }
 
 
