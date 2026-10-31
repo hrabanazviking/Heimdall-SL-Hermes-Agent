@@ -65,6 +65,21 @@ CORE_EVENT_ALIASES: dict[str, str] = {
     "InventoryItemReceived": "inventory_item",
     "InventoryUpdated": "inventory_updated",
     "NotecardReceived": "notecard_received",
+    # F4 friends & groups vocabulary (census doc 15): the friends
+    # and group lists, group join/leave confirmations, group
+    # notices, and the mute/block list. FriendOnline / FriendOffline
+    # above already carry presence, and friendship offers already
+    # ride the F1 vocabulary (FriendshipOfferReceived) — neither is
+    # duplicated here. The C# Core does not emit these yet — these
+    # names are the contract its F4 leg will speak, settled here so
+    # the seam side can be built and proven ahead of it (see
+    # awareness/social.py).
+    "FriendListReceived": "friend_list",
+    "GroupListReceived": "group_list",
+    "GroupJoined": "group_joined",
+    "GroupLeft": "group_left",
+    "GroupNoticeReceived": "group_notice",
+    "MuteListReceived": "mute_list",
     # API-form names (the §7.1 unsolicited format and the Phase I0
     # replay fixture both use these) converge on the same canonical
     # vocabulary. This map mirrors the alias set the WYRD bridge's
@@ -104,6 +119,12 @@ CORE_EVENT_ALIASES: dict[str, str] = {
     "inventory_item": "inventory_item",
     "inventory_updated": "inventory_updated",
     "notecard_received": "notecard_received",
+    "friend_list": "friend_list",
+    "group_list": "group_list",
+    "group_joined": "group_joined",
+    "group_left": "group_left",
+    "group_notice": "group_notice",
+    "mute_list": "mute_list",
 }
 
 

@@ -23,7 +23,12 @@ per-resident purge honoured. And inventory as a sense and a hand
 items browsable by folder/kind, notecards read only from content
 that actually arrived, landmarks and gives as governor-ready
 commands recorded only after Core confirmation — and no delete
-path at all.
+path at all. And the friends & groups surface
+(:mod:`heimdall.awareness.social`, census doc 15 slice F4):
+friends with their permissions and event-only presence, group
+memberships with exactly one active title, a group notices
+inbox, friendship/group actions recorded only after Core
+confirmation, and mute/block honouring as a hard duty.
 """
 
 from .conversations import (
@@ -58,6 +63,14 @@ from .presence import (
     PresenceTracker,
     band_for_distance,
 )
+from .social import (
+    SOCIAL_EVENTS,
+    Friend,
+    GroupMembership,
+    GroupNotice,
+    MuteEntry,
+    SocialStore,
+)
 
 __all__ = [
     "CONVERSATION_KINDS",
@@ -66,9 +79,13 @@ __all__ = [
     "ITEM_KINDS",
     "OFFER_KINDS",
     "RANGE_BANDS",
+    "SOCIAL_EVENTS",
     "CoarseEntry",
     "ConversationLog",
+    "Friend",
     "FullAvatar",
+    "GroupMembership",
+    "GroupNotice",
     "HeardEntry",
     "HudConditions",
     "HudDigest",
@@ -82,10 +99,12 @@ __all__ = [
     "LoginRecord",
     "LoginSupervisor",
     "LoginSweepConfig",
+    "MuteEntry",
     "OffersQueue",
     "PendingOffer",
     "PresenceTracker",
     "SceneDigestBuilder",
+    "SocialStore",
     "Utterance",
     "band_for_distance",
     "build_scene_digest",
