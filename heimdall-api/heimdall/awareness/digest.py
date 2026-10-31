@@ -166,10 +166,19 @@ class SceneDigestBuilder:
         objects: Any = None,
         heard: Any = None,
         vision: str | None = None,
+        visual_store: Any = None,
         now: float | None = None,
         budget_chars: int | None = None,
         budget_tokens: int | None = None,
     ) -> str:
+        # V1 (doc 16): an optional visual store supplies the
+        # vision label when the caller did not pass one — the
+        # store answers "none (object-data only)" before any
+        # image lands and "map image only" once a map tile
+        # exists, so the label can never claim more than the
+        # store actually holds. An explicit ``vision`` wins.
+        if vision is None and visual_store is not None:
+            vision = visual_store.vision_label()
         if budget_tokens is not None:
             budget = int(budget_tokens) * CHARS_PER_TOKEN
         elif budget_chars is not None:

@@ -73,6 +73,17 @@ arrived (never promoted to facts), balance updates riding only
 the events that carry them, an honest "how much L$ do I have?"
 answer, and no spend path at all — the governor's payment
 default-deny stands untouched.
+And the map sense
+(:mod:`heimdall.awareness.visual`, visual capture doc 16
+slice V1, Route A): a zoom-1 map tile fetched through an
+injectable fetcher for exactly the region + grid coordinates
+supplied — never invented — rate-limited with loud recorded
+refusals, JPEG-validated fail-closed, spooled with provenance
+as an attributed ``visual_observation`` about a place
+labelled a map image (never "what Yrsa sees"), an honest
+vision state ("none (object-data only)" until a tile lands,
+then "map image only"), and place purge of spooled tiles —
+place data carrying no resident identity at all.
 """
 
 from .appearance import (
@@ -158,6 +169,16 @@ from .social import (
     MuteEntry,
     SocialStore,
 )
+from .visual import (
+    VISUAL_EVENTS,
+    FetchRefusal,
+    MapTileRecord,
+    VisualObservation,
+    VisualState,
+    VisualStore,
+    build_map_tile_url,
+    map_tile_url,
+)
 
 __all__ = [
     "APPEARANCE_EVENTS",
@@ -174,6 +195,7 @@ __all__ = [
     "SEARCH_KINDS",
     "SOCIAL_EVENTS",
     "SOURCE_KINDS",
+    "VISUAL_EVENTS",
     "WEARABLE_KINDS",
     "AppearanceNotice",
     "AppearanceState",
@@ -182,6 +204,7 @@ __all__ = [
     "ConversationLog",
     "Destination",
     "DialogRecord",
+    "FetchRefusal",
     "Friend",
     "FullAvatar",
     "GateResult",
@@ -203,6 +226,7 @@ __all__ = [
     "LoginRecord",
     "LoginSupervisor",
     "LoginSweepConfig",
+    "MapTileRecord",
     "MoneyState",
     "MoneyStore",
     "MuteEntry",
@@ -226,11 +250,16 @@ __all__ = [
     "TeleportRecord",
     "TransactionRecord",
     "Utterance",
+    "VisualObservation",
+    "VisualState",
+    "VisualStore",
     "WornItem",
     "band_for_distance",
+    "build_map_tile_url",
     "build_scene_digest",
     "destination_from_payload",
     "dialog_buttons",
+    "map_tile_url",
     "parse_hud_payload",
     "parse_rlv_rules",
     "parse_slurl",
