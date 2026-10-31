@@ -84,6 +84,37 @@ labelled a map image (never "what Yrsa sees"), an honest
 vision state ("none (object-data only)" until a tile lands,
 then "map image only"), and place purge of spooled tiles —
 place data carrying no resident identity at all.
+And the synthetic view
+(:mod:`heimdall.awareness.synthetic`, visual capture doc 16
+slice V3, Route C): a shared meshing layer over the same
+``object_info`` events and carried position + scale/size the
+navigation raster reads — each fully-carried object meshed as
+an axis-aligned box of exactly its carried dimensions, an
+object without a carried scale (or with a non-identity
+rotation, there being no established rotation handling in
+this codebase) held known-but-unmeshable with its reason and
+never given an invented size or silently un-rotated — plus a
+stdlib software rasteriser rendering the meshed set from a
+camera through a true per-pixel depth buffer (occlusion by
+construction), flat-shaded from a deterministic synthetic
+palette, spooled as a real PNG with provenance and expressed
+as a ``visual_observation`` labelled ``synthetic_render`` —
+an attributed computed view, never a photograph or what she
+literally sees, carrying the object-set timestamp so a stale
+scene cannot pose as a fresh look.
+And movement & pathfinding
+(:mod:`heimdall.awareness.navigation`, doc 14 slices M2+M3):
+a traversability raster whose cells are UNKNOWN — never
+treated as free — until object footprints, no-entry/ban
+parcels (hard-blocked), supplied terrain heights, or her own
+walked positions say otherwise, and an A* planner over it
+(corner-cut-proof diagonals, line-of-sight smoothing,
+distinct honest failure reasons, region crossings out of
+scope) with an llGetStaticPath-style hint held as a
+cross-check only, proven walked segments recorded as
+attributed experience, and a build-only governor-ready
+``move_to`` command (tier "mind", explicit walk/fly) that
+records nothing — the M1 Core leg executes it.
 """
 
 from .appearance import (
@@ -115,6 +146,23 @@ from .hud_ingest import (
 from .inventory import ITEM_KINDS, InventoryItem, InventoryStore
 from .login_sweep import LoginRecord, LoginSupervisor, LoginSweepConfig
 from .money import MONEY_EVENTS, MoneyState, MoneyStore, TransactionRecord
+from .navigation import (
+    CELL_BLOCKED,
+    CELL_FREE,
+    CELL_HARD_BLOCKED,
+    CELL_UNKNOWN,
+    MOVE_MODES,
+    NAVIGATION_EVENTS,
+    HintAgreement,
+    HintSegmentResult,
+    HintValidation,
+    NavigationState,
+    NavigationStore,
+    PathValidity,
+    PlanResult,
+    ProvenWalkRecord,
+    WalkedRecord,
+)
 from .objects import (
     OBJECTS_EVENTS,
     DialogRecord,
@@ -169,6 +217,22 @@ from .social import (
     MuteEntry,
     SocialStore,
 )
+from .synthetic import (
+    SYNTHETIC_EVENTS,
+    SYNTHETIC_LABEL,
+    SYNTHETIC_SOURCE,
+    BoxMesh,
+    RenderResult,
+    SyntheticObject,
+    SyntheticObservation,
+    SyntheticRenderRecord,
+    SyntheticState,
+    SyntheticStore,
+    VisibleObject,
+    base_colour_for,
+    build_box_mesh,
+    encode_png,
+)
 from .visual import (
     VISUAL_EVENTS,
     FetchRefusal,
@@ -182,11 +246,17 @@ from .visual import (
 
 __all__ = [
     "APPEARANCE_EVENTS",
+    "CELL_BLOCKED",
+    "CELL_FREE",
+    "CELL_HARD_BLOCKED",
+    "CELL_UNKNOWN",
     "CONVERSATION_KINDS",
     "EVENT_KINDS",
     "FORMAT_TAG",
     "ITEM_KINDS",
     "MONEY_EVENTS",
+    "MOVE_MODES",
+    "NAVIGATION_EVENTS",
     "OBJECTS_EVENTS",
     "OFFER_KINDS",
     "PLACES_EVENTS",
@@ -195,11 +265,15 @@ __all__ = [
     "SEARCH_KINDS",
     "SOCIAL_EVENTS",
     "SOURCE_KINDS",
+    "SYNTHETIC_EVENTS",
+    "SYNTHETIC_LABEL",
+    "SYNTHETIC_SOURCE",
     "VISUAL_EVENTS",
     "WEARABLE_KINDS",
     "AppearanceNotice",
     "AppearanceState",
     "AppearanceStore",
+    "BoxMesh",
     "CoarseEntry",
     "ConversationLog",
     "Destination",
@@ -212,6 +286,9 @@ __all__ = [
     "GroupNotice",
     "HeardEntry",
     "HeldRestriction",
+    "HintAgreement",
+    "HintSegmentResult",
+    "HintValidation",
     "HudConditions",
     "HudDigest",
     "HudEvent",
@@ -230,15 +307,21 @@ __all__ = [
     "MoneyState",
     "MoneyStore",
     "MuteEntry",
+    "NavigationState",
+    "NavigationStore",
     "ObjectRecord",
     "ObjectStore",
     "OffersQueue",
     "OutfitChangeRecord",
     "ParsedRlvRule",
+    "PathValidity",
     "PendingOffer",
     "PlaceStore",
+    "PlanResult",
     "PresenceTracker",
+    "ProvenWalkRecord",
     "RegionInfo",
+    "RenderResult",
     "RlvApplyResult",
     "RlvRestriction",
     "RlvState",
@@ -247,18 +330,28 @@ __all__ = [
     "SearchResult",
     "SelfUseRecord",
     "SocialStore",
+    "SyntheticObject",
+    "SyntheticObservation",
+    "SyntheticRenderRecord",
+    "SyntheticState",
+    "SyntheticStore",
     "TeleportRecord",
     "TransactionRecord",
     "Utterance",
+    "VisibleObject",
     "VisualObservation",
     "VisualState",
     "VisualStore",
+    "WalkedRecord",
     "WornItem",
     "band_for_distance",
+    "base_colour_for",
+    "build_box_mesh",
     "build_map_tile_url",
     "build_scene_digest",
     "destination_from_payload",
     "dialog_buttons",
+    "encode_png",
     "map_tile_url",
     "parse_hud_payload",
     "parse_rlv_rules",
