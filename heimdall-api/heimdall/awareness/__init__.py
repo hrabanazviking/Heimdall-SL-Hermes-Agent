@@ -44,8 +44,26 @@ only after Core confirmation, script dialogs answered through
 the F1 offers queue with the choice validated against the
 buttons actually offered, and animations/gestures played by
 exactly the identifier supplied — nothing invented.
+And appearance
+(:mod:`heimdall.awareness.appearance`, census doc 15 slice F7):
+an outfit that is unknown — never invented as empty — until a
+snapshot arrives, entries holding exactly what they carried,
+wear/remove/attach/detach/change-outfit as build-only commands
+validated against a bound inventory (or explicit details) and
+recorded only after Core confirmation, and appearance-change
+events marking a known outfit stale without touching its
+entries until the next snapshot.
 """
 
+from .appearance import (
+    APPEARANCE_EVENTS,
+    WEARABLE_KINDS,
+    AppearanceNotice,
+    AppearanceState,
+    AppearanceStore,
+    OutfitChangeRecord,
+    WornItem,
+)
 from .conversations import (
     CONVERSATION_KINDS,
     ConversationLog,
@@ -108,6 +126,7 @@ from .social import (
 )
 
 __all__ = [
+    "APPEARANCE_EVENTS",
     "CONVERSATION_KINDS",
     "EVENT_KINDS",
     "FORMAT_TAG",
@@ -118,6 +137,10 @@ __all__ = [
     "RANGE_BANDS",
     "SEARCH_KINDS",
     "SOCIAL_EVENTS",
+    "WEARABLE_KINDS",
+    "AppearanceNotice",
+    "AppearanceState",
+    "AppearanceStore",
     "CoarseEntry",
     "ConversationLog",
     "Destination",
@@ -145,6 +168,7 @@ __all__ = [
     "ObjectRecord",
     "ObjectStore",
     "OffersQueue",
+    "OutfitChangeRecord",
     "PendingOffer",
     "PlaceStore",
     "PresenceTracker",
@@ -154,6 +178,7 @@ __all__ = [
     "SocialStore",
     "TeleportRecord",
     "Utterance",
+    "WornItem",
     "band_for_distance",
     "build_scene_digest",
     "destination_from_payload",

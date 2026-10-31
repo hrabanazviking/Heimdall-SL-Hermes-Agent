@@ -105,6 +105,19 @@ CORE_EVENT_ALIASES: dict[str, str] = {
     "AnimationStarted": "animation_started",
     "AnimationStopped": "animation_stopped",
     "GesturePlayed": "gesture_played",
+    # F7 appearance vocabulary (census doc 15): the outfit
+    # snapshot, single-item worn/removed and attached/detached
+    # confirmations. AppearanceChanged above already carries
+    # appearance-change notices — it is not duplicated here.
+    # The C# Core does not emit these yet — these names are the
+    # contract its F7 leg will speak, settled here so the seam
+    # side can be built and proven ahead of it (see
+    # awareness/appearance.py).
+    "OutfitReceived": "outfit_received",
+    "ItemWorn": "item_worn",
+    "ItemRemoved": "item_removed",
+    "AttachmentAttached": "attachment_attached",
+    "AttachmentDetached": "attachment_detached",
     # API-form names (the §7.1 unsolicited format and the Phase I0
     # replay fixture both use these) converge on the same canonical
     # vocabulary. This map mirrors the alias set the WYRD bridge's
@@ -158,6 +171,11 @@ CORE_EVENT_ALIASES: dict[str, str] = {
     "animation_started": "animation_started",
     "animation_stopped": "animation_stopped",
     "gesture_played": "gesture_played",
+    "outfit_received": "outfit_received",
+    "item_worn": "item_worn",
+    "item_removed": "item_removed",
+    "attachment_attached": "attachment_attached",
+    "attachment_detached": "attachment_detached",
 }
 
 
