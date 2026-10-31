@@ -53,6 +53,17 @@ validated against a bound inventory (or explicit details) and
 recorded only after Core confirmation, and appearance-change
 events marking a known outfit stale without touching its
 entries until the next snapshot.
+And the RLV restriction store and gate
+(:mod:`heimdall.awareness.rlv`, commission 4, doc 05 §6.4 +
+doc 06): restrictions source-attributed and applied only
+from allowlisted sources (Volmarr's objects, her own worn
+items, per-place opted-in venues), everything else held and
+reportable, safety invariants refusing kill-switch / Volmarr-
+reachability / logout restrictions even from allowlisted
+sources, per-source stack semantics, an ``rlv_blocked``
+behaviour gate, felt state that always names sources, and
+build-only self-use commands recorded only after Core
+confirmation.
 And money as a sense
 (:mod:`heimdall.awareness.money`, census doc 15 slice F8):
 a balance that is unknown — never invented as L$0 — until a
@@ -126,6 +137,19 @@ from .presence import (
     PresenceTracker,
     band_for_distance,
 )
+from .rlv import (
+    RLV_EVENTS,
+    SOURCE_KINDS,
+    GateResult,
+    HeldRestriction,
+    ParsedRlvRule,
+    RlvApplyResult,
+    RlvRestriction,
+    RlvState,
+    RlvStore,
+    SelfUseRecord,
+    parse_rlv_rules,
+)
 from .social import (
     SOCIAL_EVENTS,
     Friend,
@@ -146,8 +170,10 @@ __all__ = [
     "OFFER_KINDS",
     "PLACES_EVENTS",
     "RANGE_BANDS",
+    "RLV_EVENTS",
     "SEARCH_KINDS",
     "SOCIAL_EVENTS",
+    "SOURCE_KINDS",
     "WEARABLE_KINDS",
     "AppearanceNotice",
     "AppearanceState",
@@ -158,9 +184,11 @@ __all__ = [
     "DialogRecord",
     "Friend",
     "FullAvatar",
+    "GateResult",
     "GroupMembership",
     "GroupNotice",
     "HeardEntry",
+    "HeldRestriction",
     "HudConditions",
     "HudDigest",
     "HudEvent",
@@ -182,12 +210,18 @@ __all__ = [
     "ObjectStore",
     "OffersQueue",
     "OutfitChangeRecord",
+    "ParsedRlvRule",
     "PendingOffer",
     "PlaceStore",
     "PresenceTracker",
     "RegionInfo",
+    "RlvApplyResult",
+    "RlvRestriction",
+    "RlvState",
+    "RlvStore",
     "SceneDigestBuilder",
     "SearchResult",
+    "SelfUseRecord",
     "SocialStore",
     "TeleportRecord",
     "TransactionRecord",
@@ -198,5 +232,6 @@ __all__ = [
     "destination_from_payload",
     "dialog_buttons",
     "parse_hud_payload",
+    "parse_rlv_rules",
     "parse_slurl",
 ]
