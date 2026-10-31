@@ -102,6 +102,27 @@ as a ``visual_observation`` labelled ``synthetic_render`` —
 an attributed computed view, never a photograph or what she
 literally sees, carrying the object-set timestamp so a stale
 scene cannot pose as a fresh look.
+And the attended photo handoff
+(:mod:`heimdall.awareness.attended`, visual capture doc 16
+slice V4, Route D, per the doc 17 protocol): a true
+photograph — Volmarr's snapshot through Volmarr's viewer in
+an attended session, handed over as PNG bytes plus a
+required sidecar — filed fail-closed (PNG magic checked,
+exact ``attended_snapshot`` / ``photograph`` values, the
+three sanctioned place kinds only, unknowns held as None
+and never guessed or borrowed, an empty resident list
+never accepted) with SHA-256 deduplication, spooled PNG +
+sidecar together under the protocol filename with full
+provenance, and held as an attributed ``visual_observation``
+labelled a photograph whose text names it the
+photographer's snapshot — perception, never canonical fact,
+never "what Yrsa sees" — with an honest vision state
+("none (object-data only)" until a photo files, then
+"attended photograph only", wired into the scene digest for
+a state whose newest image is a V4 photo) and per-resident
+purge that deletes exactly the photos listing the resident
+and reports partial honestly while "unknown"-visibility
+photos remain.
 And movement & pathfinding
 (:mod:`heimdall.awareness.navigation`, doc 14 slices M2+M3):
 a traversability raster whose cells are UNKNOWN — never
@@ -125,6 +146,18 @@ from .appearance import (
     AppearanceStore,
     OutfitChangeRecord,
     WornItem,
+)
+from .attended import (
+    ATTENDED_LABEL,
+    ATTENDED_PLACE_KINDS,
+    ATTENDED_SOURCE,
+    RESIDENTS_UNKNOWN,
+    AttendedFiling,
+    AttendedObservation,
+    AttendedPhotoRecord,
+    AttendedPhotoStore,
+    AttendedPurgeReport,
+    AttendedState,
 )
 from .conversations import (
     CONVERSATION_KINDS,
@@ -246,6 +279,9 @@ from .visual import (
 
 __all__ = [
     "APPEARANCE_EVENTS",
+    "ATTENDED_LABEL",
+    "ATTENDED_PLACE_KINDS",
+    "ATTENDED_SOURCE",
     "CELL_BLOCKED",
     "CELL_FREE",
     "CELL_HARD_BLOCKED",
@@ -261,6 +297,7 @@ __all__ = [
     "OFFER_KINDS",
     "PLACES_EVENTS",
     "RANGE_BANDS",
+    "RESIDENTS_UNKNOWN",
     "RLV_EVENTS",
     "SEARCH_KINDS",
     "SOCIAL_EVENTS",
@@ -273,6 +310,12 @@ __all__ = [
     "AppearanceNotice",
     "AppearanceState",
     "AppearanceStore",
+    "AttendedFiling",
+    "AttendedObservation",
+    "AttendedPhotoRecord",
+    "AttendedPhotoStore",
+    "AttendedPurgeReport",
+    "AttendedState",
     "BoxMesh",
     "CoarseEntry",
     "ConversationLog",

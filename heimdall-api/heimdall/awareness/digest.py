@@ -167,6 +167,7 @@ class SceneDigestBuilder:
         heard: Any = None,
         vision: str | None = None,
         visual_store: Any = None,
+        attended_store: Any = None,
         now: float | None = None,
         budget_chars: int | None = None,
         budget_tokens: int | None = None,
@@ -177,6 +178,27 @@ class SceneDigestBuilder:
         # image lands and "map image only" once a map tile
         # exists, so the label can never claim more than the
         # store actually holds. An explicit ``vision`` wins.
+        # V4 (doc 17): an optional attended-photo store
+        # supplies the label "attended photograph only" under
+        # exactly one condition — the caller supplies
+        # ``attended_store`` only when the attended photograph
+        # is the newest image (doc 17's wording condition: "a
+        # state whose newest image is a V4 photo"). Under that
+        # condition the attended store, when it actually holds
+        # at least one filed photo, takes precedence over the
+        # visual store: a true photograph outranks a map image
+        # as the newest image. An attended store that holds no
+        # photo falls through to the visual store (or the none
+        # posture) — "attended photograph only" is never
+        # claimed for an empty store. An explicit ``vision``
+        # still wins over everything, and a digest built with
+        # neither store is unchanged.
+        if (
+            vision is None
+            and attended_store is not None
+            and attended_store.records()
+        ):
+            vision = attended_store.vision_label()
         if vision is None and visual_store is not None:
             vision = visual_store.vision_label()
         if budget_tokens is not None:
