@@ -91,6 +91,20 @@ CORE_EVENT_ALIASES: dict[str, str] = {
     "MapRegionReceived": "region_info",
     "SearchResultsReceived": "search_results",
     "HomeLocationSet": "home_set",
+    # F6 object-interaction vocabulary (census doc 15): touch and
+    # object-targeted-sit confirmations, and animation/gesture
+    # confirmations. ObjectInfo / ObjectAppeared above already
+    # carry object data, and ScriptDialogReceived above already
+    # carries script dialogs (F1 offers) — neither is duplicated
+    # here. The C# Core does not emit these yet — these names are
+    # the contract its F6 leg will speak, settled here so the seam
+    # side can be built and proven ahead of it (see
+    # awareness/objects.py).
+    "ObjectTouched": "object_touched",
+    "ObjectSatOn": "object_sat_on",
+    "AnimationStarted": "animation_started",
+    "AnimationStopped": "animation_stopped",
+    "GesturePlayed": "gesture_played",
     # API-form names (the §7.1 unsolicited format and the Phase I0
     # replay fixture both use these) converge on the same canonical
     # vocabulary. This map mirrors the alias set the WYRD bridge's
@@ -139,6 +153,11 @@ CORE_EVENT_ALIASES: dict[str, str] = {
     "region_info": "region_info",
     "search_results": "search_results",
     "home_set": "home_set",
+    "object_touched": "object_touched",
+    "object_sat_on": "object_sat_on",
+    "animation_started": "animation_started",
+    "animation_stopped": "animation_stopped",
+    "gesture_played": "gesture_played",
 }
 
 

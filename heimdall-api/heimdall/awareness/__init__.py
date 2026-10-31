@@ -36,6 +36,14 @@ after Core confirmation, set/go home with no guessed
 destination, region records that invent nothing, and
 rate-aware people/places/events/groups search — build checks
 the pacing, confirmation consumes it, never a scrape.
+And object interaction
+(:mod:`heimdall.awareness.objects`, census doc 15 slice F6):
+a registry of known objects holding only what events carried,
+touch and object-targeted sit as build-only commands recorded
+only after Core confirmation, script dialogs answered through
+the F1 offers queue with the choice validated against the
+buttons actually offered, and animations/gestures played by
+exactly the identifier supplied — nothing invented.
 """
 
 from .conversations import (
@@ -57,6 +65,15 @@ from .hud_ingest import (
 )
 from .inventory import ITEM_KINDS, InventoryItem, InventoryStore
 from .login_sweep import LoginRecord, LoginSupervisor, LoginSweepConfig
+from .objects import (
+    OBJECTS_EVENTS,
+    DialogRecord,
+    InteractionRecord,
+    KnownPlayable,
+    ObjectRecord,
+    ObjectStore,
+    dialog_buttons,
+)
 from .offers import (
     EVENT_KINDS,
     OFFER_KINDS,
@@ -95,6 +112,7 @@ __all__ = [
     "EVENT_KINDS",
     "FORMAT_TAG",
     "ITEM_KINDS",
+    "OBJECTS_EVENTS",
     "OFFER_KINDS",
     "PLACES_EVENTS",
     "RANGE_BANDS",
@@ -103,6 +121,7 @@ __all__ = [
     "CoarseEntry",
     "ConversationLog",
     "Destination",
+    "DialogRecord",
     "Friend",
     "FullAvatar",
     "GroupMembership",
@@ -115,12 +134,16 @@ __all__ = [
     "HudIngestResult",
     "HudPayloadError",
     "HudPlace",
+    "InteractionRecord",
     "InventoryItem",
     "InventoryStore",
+    "KnownPlayable",
     "LoginRecord",
     "LoginSupervisor",
     "LoginSweepConfig",
     "MuteEntry",
+    "ObjectRecord",
+    "ObjectStore",
     "OffersQueue",
     "PendingOffer",
     "PlaceStore",
@@ -134,6 +157,7 @@ __all__ = [
     "band_for_distance",
     "build_scene_digest",
     "destination_from_payload",
+    "dialog_buttons",
     "parse_hud_payload",
     "parse_slurl",
 ]
