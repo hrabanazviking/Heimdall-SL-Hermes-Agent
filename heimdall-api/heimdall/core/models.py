@@ -80,6 +80,17 @@ CORE_EVENT_ALIASES: dict[str, str] = {
     "GroupLeft": "group_left",
     "GroupNoticeReceived": "group_notice",
     "MuteListReceived": "mute_list",
+    # F5 places & discovery vocabulary (census doc 15): region /
+    # map data, search results, and the home-set confirmation.
+    # TeleportCompleted above already carries arrivals — it is
+    # not duplicated here. The C# Core does not emit these yet —
+    # these names are the contract its F5 leg will speak, settled
+    # here so the seam side can be built and proven ahead of it
+    # (see awareness/places.py).
+    "RegionInfoReceived": "region_info",
+    "MapRegionReceived": "region_info",
+    "SearchResultsReceived": "search_results",
+    "HomeLocationSet": "home_set",
     # API-form names (the §7.1 unsolicited format and the Phase I0
     # replay fixture both use these) converge on the same canonical
     # vocabulary. This map mirrors the alias set the WYRD bridge's
@@ -125,6 +136,9 @@ CORE_EVENT_ALIASES: dict[str, str] = {
     "group_left": "group_left",
     "group_notice": "group_notice",
     "mute_list": "mute_list",
+    "region_info": "region_info",
+    "search_results": "search_results",
+    "home_set": "home_set",
 }
 
 

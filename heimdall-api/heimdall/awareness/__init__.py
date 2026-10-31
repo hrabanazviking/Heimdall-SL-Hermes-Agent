@@ -29,6 +29,13 @@ friends with their permissions and event-only presence, group
 memberships with exactly one active title, a group notices
 inbox, friendship/group actions recorded only after Core
 confirmation, and mute/block honouring as a hard duty.
+And places & discovery
+(:mod:`heimdall.awareness.places`, census doc 15 slice F5):
+SLURL parsing, teleport commands recorded into history only
+after Core confirmation, set/go home with no guessed
+destination, region records that invent nothing, and
+rate-aware people/places/events/groups search — build checks
+the pacing, confirmation consumes it, never a scrape.
 """
 
 from .conversations import (
@@ -56,6 +63,17 @@ from .offers import (
     OffersQueue,
     PendingOffer,
 )
+from .places import (
+    PLACES_EVENTS,
+    SEARCH_KINDS,
+    Destination,
+    PlaceStore,
+    RegionInfo,
+    SearchResult,
+    TeleportRecord,
+    destination_from_payload,
+    parse_slurl,
+)
 from .presence import (
     RANGE_BANDS,
     CoarseEntry,
@@ -78,10 +96,13 @@ __all__ = [
     "FORMAT_TAG",
     "ITEM_KINDS",
     "OFFER_KINDS",
+    "PLACES_EVENTS",
     "RANGE_BANDS",
+    "SEARCH_KINDS",
     "SOCIAL_EVENTS",
     "CoarseEntry",
     "ConversationLog",
+    "Destination",
     "Friend",
     "FullAvatar",
     "GroupMembership",
@@ -102,11 +123,17 @@ __all__ = [
     "MuteEntry",
     "OffersQueue",
     "PendingOffer",
+    "PlaceStore",
     "PresenceTracker",
+    "RegionInfo",
     "SceneDigestBuilder",
+    "SearchResult",
     "SocialStore",
+    "TeleportRecord",
     "Utterance",
     "band_for_distance",
     "build_scene_digest",
+    "destination_from_payload",
     "parse_hud_payload",
+    "parse_slurl",
 ]
