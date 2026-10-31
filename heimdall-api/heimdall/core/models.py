@@ -138,6 +138,15 @@ CORE_EVENT_ALIASES: dict[str, str] = {
     "RlvRestrictionApplied": "rlv_restriction_applied",
     "RlvRestrictionHeld": "rlv_restriction_held",
     "RlvRestrictionLifted": "rlv_restriction_lifted",
+    # V1 map-sense vocabulary (visual capture doc 16, Route A):
+    # an attributed image observation about a place — a map
+    # image, never a photograph or "what Yrsa sees".
+    # RegionChanged above already carries the region-change
+    # trigger — it is not duplicated here. The C# Core does not
+    # emit this yet — this name is the contract any future Core
+    # leg will speak, settled here so the seam side can be built
+    # and proven ahead of it (see awareness/visual.py).
+    "VisualObservation": "visual_observation",
     # API-form names (the §7.1 unsolicited format and the Phase I0
     # replay fixture both use these) converge on the same canonical
     # vocabulary. This map mirrors the alias set the WYRD bridge's
@@ -201,6 +210,7 @@ CORE_EVENT_ALIASES: dict[str, str] = {
     "rlv_restriction_applied": "rlv_restriction_applied",
     "rlv_restriction_held": "rlv_restriction_held",
     "rlv_restriction_lifted": "rlv_restriction_lifted",
+    "visual_observation": "visual_observation",
 }
 
 
