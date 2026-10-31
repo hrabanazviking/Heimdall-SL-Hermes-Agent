@@ -84,6 +84,24 @@ labelled a map image (never "what Yrsa sees"), an honest
 vision state ("none (object-data only)" until a tile lands,
 then "map image only"), and place purge of spooled tiles —
 place data carrying no resident identity at all.
+And the synthetic view
+(:mod:`heimdall.awareness.synthetic`, visual capture doc 16
+slice V3, Route C): a shared meshing layer over the same
+``object_info`` events and carried position + scale/size the
+navigation raster reads — each fully-carried object meshed as
+an axis-aligned box of exactly its carried dimensions, an
+object without a carried scale (or with a non-identity
+rotation, there being no established rotation handling in
+this codebase) held known-but-unmeshable with its reason and
+never given an invented size or silently un-rotated — plus a
+stdlib software rasteriser rendering the meshed set from a
+camera through a true per-pixel depth buffer (occlusion by
+construction), flat-shaded from a deterministic synthetic
+palette, spooled as a real PNG with provenance and expressed
+as a ``visual_observation`` labelled ``synthetic_render`` —
+an attributed computed view, never a photograph or what she
+literally sees, carrying the object-set timestamp so a stale
+scene cannot pose as a fresh look.
 And movement & pathfinding
 (:mod:`heimdall.awareness.navigation`, doc 14 slices M2+M3):
 a traversability raster whose cells are UNKNOWN — never
@@ -199,6 +217,22 @@ from .social import (
     MuteEntry,
     SocialStore,
 )
+from .synthetic import (
+    SYNTHETIC_EVENTS,
+    SYNTHETIC_LABEL,
+    SYNTHETIC_SOURCE,
+    BoxMesh,
+    RenderResult,
+    SyntheticObject,
+    SyntheticObservation,
+    SyntheticRenderRecord,
+    SyntheticState,
+    SyntheticStore,
+    VisibleObject,
+    base_colour_for,
+    build_box_mesh,
+    encode_png,
+)
 from .visual import (
     VISUAL_EVENTS,
     FetchRefusal,
@@ -231,11 +265,15 @@ __all__ = [
     "SEARCH_KINDS",
     "SOCIAL_EVENTS",
     "SOURCE_KINDS",
+    "SYNTHETIC_EVENTS",
+    "SYNTHETIC_LABEL",
+    "SYNTHETIC_SOURCE",
     "VISUAL_EVENTS",
     "WEARABLE_KINDS",
     "AppearanceNotice",
     "AppearanceState",
     "AppearanceStore",
+    "BoxMesh",
     "CoarseEntry",
     "ConversationLog",
     "Destination",
@@ -283,6 +321,7 @@ __all__ = [
     "PresenceTracker",
     "ProvenWalkRecord",
     "RegionInfo",
+    "RenderResult",
     "RlvApplyResult",
     "RlvRestriction",
     "RlvState",
@@ -291,19 +330,28 @@ __all__ = [
     "SearchResult",
     "SelfUseRecord",
     "SocialStore",
+    "SyntheticObject",
+    "SyntheticObservation",
+    "SyntheticRenderRecord",
+    "SyntheticState",
+    "SyntheticStore",
     "TeleportRecord",
     "TransactionRecord",
     "Utterance",
+    "VisibleObject",
     "VisualObservation",
     "VisualState",
     "VisualStore",
     "WalkedRecord",
     "WornItem",
     "band_for_distance",
+    "base_colour_for",
+    "build_box_mesh",
     "build_map_tile_url",
     "build_scene_digest",
     "destination_from_payload",
     "dialog_buttons",
+    "encode_png",
     "map_tile_url",
     "parse_hud_payload",
     "parse_rlv_rules",
