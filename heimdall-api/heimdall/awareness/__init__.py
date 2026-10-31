@@ -53,6 +53,15 @@ validated against a bound inventory (or explicit details) and
 recorded only after Core confirmation, and appearance-change
 events marking a known outfit stale without touching its
 entries until the next snapshot.
+And money as a sense
+(:mod:`heimdall.awareness.money`, census doc 15 slice F8):
+a balance that is unknown — never invented as L$0 — until a
+balance event arrives, strictly validated non-negative integer
+balances, attributed transaction records held exactly as they
+arrived (never promoted to facts), balance updates riding only
+the events that carry them, an honest "how much L$ do I have?"
+answer, and no spend path at all — the governor's payment
+default-deny stands untouched.
 """
 
 from .appearance import (
@@ -83,6 +92,7 @@ from .hud_ingest import (
 )
 from .inventory import ITEM_KINDS, InventoryItem, InventoryStore
 from .login_sweep import LoginRecord, LoginSupervisor, LoginSweepConfig
+from .money import MONEY_EVENTS, MoneyState, MoneyStore, TransactionRecord
 from .objects import (
     OBJECTS_EVENTS,
     DialogRecord,
@@ -131,6 +141,7 @@ __all__ = [
     "EVENT_KINDS",
     "FORMAT_TAG",
     "ITEM_KINDS",
+    "MONEY_EVENTS",
     "OBJECTS_EVENTS",
     "OFFER_KINDS",
     "PLACES_EVENTS",
@@ -164,6 +175,8 @@ __all__ = [
     "LoginRecord",
     "LoginSupervisor",
     "LoginSweepConfig",
+    "MoneyState",
+    "MoneyStore",
     "MuteEntry",
     "ObjectRecord",
     "ObjectStore",
@@ -177,6 +190,7 @@ __all__ = [
     "SearchResult",
     "SocialStore",
     "TeleportRecord",
+    "TransactionRecord",
     "Utterance",
     "WornItem",
     "band_for_distance",

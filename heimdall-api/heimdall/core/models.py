@@ -118,6 +118,16 @@ CORE_EVENT_ALIASES: dict[str, str] = {
     "ItemRemoved": "item_removed",
     "AttachmentAttached": "attachment_attached",
     "AttachmentDetached": "attachment_detached",
+    # F8 money-as-a-sense vocabulary (census doc 15): the balance
+    # event and the transaction event — sense-half only. There is
+    # deliberately no spend vocabulary here: no pay/buy event or
+    # confirmation exists in this slice, and the governor's
+    # money-command default-deny stands untouched. The C# Core
+    # does not emit these yet — these names are the contract its
+    # F8 leg will speak, settled here so the seam side can be
+    # built and proven ahead of it (see awareness/money.py).
+    "BalanceReceived": "balance_received",
+    "TransactionReceived": "transaction_received",
     # API-form names (the §7.1 unsolicited format and the Phase I0
     # replay fixture both use these) converge on the same canonical
     # vocabulary. This map mirrors the alias set the WYRD bridge's
@@ -176,6 +186,8 @@ CORE_EVENT_ALIASES: dict[str, str] = {
     "item_removed": "item_removed",
     "attachment_attached": "attachment_attached",
     "attachment_detached": "attachment_detached",
+    "balance_received": "balance_received",
+    "transaction_received": "transaction_received",
 }
 
 
