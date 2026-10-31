@@ -51,6 +51,12 @@ class SendResult:
     channel: str  # the channel the caller asked for — always stamped
     ok: bool  # True only when the Core confirmed the send
     reply: dict[str, Any]  # the router's §7.1 response, verbatim
+    # Where the send was addressed: the recipient UUID for IM, the
+    # group UUID for group IM, None for (public) local chat. HR-004:
+    # this is the Core-confirmation record's target — debt
+    # settlement matches on it channel-exactly, so it is stamped
+    # here, by the send path itself, never reconstructed later.
+    target_uuid: str | None = None
 
     @property
     def blocked_reason(self) -> str | None:
@@ -68,6 +74,7 @@ class ChatService:
         *,
         tier: str = "mind",
         id_factory: Callable[[], str] | None = None,
+        on_send: Callable[[SendResult], object] | None = None,
     ) -> None:
         self._router = router
         self._tier = tier
@@ -75,6 +82,14 @@ class ChatService:
         self._id_factory = id_factory or (
             lambda: f"chat-{next(self._counter)}"
         )
+        # HR-004 settlement wiring: when given, called with EVERY
+        # SendResult (confirmed and refused alike) after routing.
+        # The natural sink is ChatWatcher.record_send_result, which
+        # itself enforces the receipts law — only ``ok`` results
+        # settle debt — so refused sends are reported, never hidden,
+        # and settle nothing. Observer exceptions propagate (fail
+        # visible): a broken ledger must not silently swallow sends.
+        self._on_send = on_send
 
     # -- the three send paths (one per channel, by design) --------
     def send_local_chat(
@@ -86,6 +101,7 @@ class ChatService:
             "say",
             {"msg": self._require_text(text), "mode": mode},
             tier,
+            target_uuid=None,
         )
 
     def send_im(
@@ -110,6 +126,7 @@ class ChatService:
                 "msg": self._require_text(text),
             },
             tier,
+            target_uuid=str(avatar_uuid),
         )
 
     def send_group_im(
@@ -130,6 +147,7 @@ class ChatService:
                 "msg": self._require_text(text),
             },
             tier,
+            target_uuid=str(group_uuid),
         )
 
     # -- internals --------------------------------------------------
@@ -145,6 +163,8 @@ class ChatService:
         cmd: str,
         params: dict[str, Any],
         tier: str | None,
+        *,
+        target_uuid: str | None = None,
     ) -> SendResult:
         wire: dict[str, Any] = {
             "id": self._id_factory(),
@@ -153,6 +173,12 @@ class ChatService:
             **params,
         }
         reply = self._router.route_wire(wire)
-        return SendResult(
-            channel=channel, ok=reply.get("status") == "ok", reply=reply
+        result = SendResult(
+            channel=channel,
+            ok=reply.get("status") == "ok",
+            reply=reply,
+            target_uuid=target_uuid,
         )
+        if self._on_send is not None:
+            self._on_send(result)
+        return result

@@ -53,6 +53,10 @@ class Interaction:
     msg: str
     timestamp: float | None  # grid-side time, when the event carried one
     received_at: float  # watcher clock time when it was classified
+    # The group a GROUP_IM line belongs to, when the event carried
+    # it (HR-004: debt settlement for a group must name its group —
+    # a group send may never settle another group's debt).
+    group_uuid: str | None = None
 
 
 class KnownAvatars:
