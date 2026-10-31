@@ -7,6 +7,9 @@ that wires the whole Python side of the seam together —
       + CommandRouter over the NDJSON IPC transport (to Heimdall.Core)
       + EventDispatcher, optionally forwarding to a WYRD world sink
       + HeimdallWsServer (§7.1 WebSocket API, HMAC-authenticated)
+      + ConversationLog (F2: per-thread conversation store, attached
+        to the dispatcher in every session so conversation events
+        are consumed — and re-readable — even with no client live)
 
 Each piece was built and tested on its own in slices 1 and 3; this
 module only *wires* them, in exactly one place, so deployment is
@@ -52,6 +55,7 @@ from .api.auth import AuthConfigError, HmacAuthenticator
 from .api.command_router import CommandRouter, CommandTransport
 from .api.event_dispatcher import EventDispatcher, WorldSink
 from .api.ws_server import DEFAULT_HOST, DEFAULT_PORT, HeimdallWsServer
+from .awareness.conversations import ConversationLog
 from .core.governor import MessageGovernor
 from .core.ipc_client import IpcClient
 from .core.models import SeamEvent
@@ -154,6 +158,7 @@ class HeimdallRuntime:
         ws_server: HeimdallWsServer,
         transport: CommandTransport,
         sink: WorldSink | None = None,
+        conversations: ConversationLog | None = None,
     ) -> None:
         self.governor = governor
         self.dispatcher = dispatcher
@@ -163,6 +168,7 @@ class HeimdallRuntime:
         self.server = ws_server
         self.transport = transport
         self.sink = sink
+        self.conversations = conversations
         self._pump_thread: threading.Thread | None = None
         self._pump_stop = threading.Event()
         self.event_pump_error: Exception | None = None
@@ -247,7 +253,18 @@ class HeimdallRuntime:
             transport = IpcClient(**kwargs)
         governor = governor if governor is not None else MessageGovernor()
         dispatcher = EventDispatcher(sink=resolved_sink)
-        router = CommandRouter(transport, governor)
+        # F2: a conversation consumer is attached in EVERY session —
+        # the per-thread log ingests chat/IM/group-chat as attributed
+        # utterances, so an IM arriving while no mind client is
+        # connected is held in a re-readable thread, never lost (the
+        # Phase 1 lost-IM class). The router records her own sends
+        # into the same log, only after Core confirmation.
+        conversations = ConversationLog()
+        for event_name in ("chat", "im", "group_chat"):
+            dispatcher.subscribe(event_name, conversations.ingest_event)
+        router = CommandRouter(
+            transport, governor, conversation_log=conversations
+        )
         ws_server = HeimdallWsServer(
             router, dispatcher, authenticator, host=host, port=port
         )
@@ -258,6 +275,7 @@ class HeimdallRuntime:
             ws_server=ws_server,
             transport=transport,
             sink=resolved_sink,
+            conversations=conversations,
         )
 
     # -- lifecycle --------------------------------------------------

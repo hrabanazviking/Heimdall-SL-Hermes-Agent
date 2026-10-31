@@ -14,8 +14,18 @@ presence tier only, fail-closed. And the pending-offers queue
 (:mod:`heimdall.awareness.offers`, census doc 15 slice F1, doc 03
 §6): incoming social offers held as decision events — hold-and-show,
 never silent auto-accept, debit permissions operator-gated.
+And the per-thread conversation log
+(:mod:`heimdall.awareness.conversations`, census doc 15 slice F2):
+chat/IM/group-chat held as attributed utterances in re-readable
+threads — outbound recorded only after Core confirmation,
+per-resident purge honoured.
 """
 
+from .conversations import (
+    CONVERSATION_KINDS,
+    ConversationLog,
+    Utterance,
+)
 from .digest import HeardEntry, SceneDigestBuilder, build_scene_digest
 from .hud_ingest import (
     FORMAT_TAG,
@@ -44,11 +54,13 @@ from .presence import (
 )
 
 __all__ = [
+    "CONVERSATION_KINDS",
     "EVENT_KINDS",
     "FORMAT_TAG",
     "OFFER_KINDS",
     "RANGE_BANDS",
     "CoarseEntry",
+    "ConversationLog",
     "FullAvatar",
     "HeardEntry",
     "HudConditions",
@@ -65,6 +77,7 @@ __all__ = [
     "PendingOffer",
     "PresenceTracker",
     "SceneDigestBuilder",
+    "Utterance",
     "band_for_distance",
     "build_scene_digest",
     "parse_hud_payload",

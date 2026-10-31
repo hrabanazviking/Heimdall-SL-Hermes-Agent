@@ -25,7 +25,9 @@ from .models import Command
 
 DAILY_MESSAGE_CAP = 5000
 
-MESSAGE_COMMANDS = frozenset({"chat", "say", "im", "group_chat", "shout", "whisper"})
+MESSAGE_COMMANDS = frozenset(
+    {"chat", "say", "im", "group_im", "group_chat", "shout", "whisper"}
+)
 MONEY_COMMANDS = frozenset({"pay", "give_money", "give_linden"})
 
 
