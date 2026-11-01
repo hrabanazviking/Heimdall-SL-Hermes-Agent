@@ -26,6 +26,11 @@ that nothing conversational falls on the floor unnoticed:
   ``ambient``; rules and the exchange-state machine live in
   :mod:`heimdall.chat.classification`). The stamp is set here, at
   classification time, from the line's arrival time.
+- HR-006: when an Aurelia plug is wired (``aurelia_feed``), every
+  classified interaction is *also* fed to Aurelia — after it has
+  landed in ``history``/inbox — under strict failure isolation:
+  a plug failure is logged and swallowed here as well as inside
+  the plug itself, so Aurelia can never block the mind feed.
 - Speakers are learned into :class:`KnownAvatars` as a side effect
   of observation — name <-> UUID pairs from real events only.
 - When the events socket drops, the watcher reconnects with
@@ -50,6 +55,7 @@ daemon thread for deployment. Standard library only.
 """
 from __future__ import annotations
 
+import logging
 import socket
 import threading
 import time
@@ -67,6 +73,8 @@ from .classification import (
     ExchangeTracker,
 )
 from .debt import find_settlement_candidate
+
+logger = logging.getLogger(__name__)
 
 # The check cadence Volmarr ordered: drain and classify every 5 s.
 CHECK_INTERVAL_S = 5.0
@@ -130,6 +138,7 @@ class ChatWatcher:
         check_interval_s: float = CHECK_INTERVAL_S,
         self_name: str = DEFAULT_SELF_NAME,
         exchange_window_s: float = EXCHANGE_INACTIVITY_WINDOW_S,
+        aurelia_feed: Any = None,
     ) -> None:
         self.event_socket = event_socket
         self.check_interval_s = float(check_interval_s)
@@ -142,6 +151,12 @@ class ChatWatcher:
         self.exchange_tracker = ExchangeTracker(
             self_name=self.self_name, window_s=self.exchange_window_s
         )
+        # HR-006 Aurelia dual feed (optional plug): an object with
+        # a ``feed(interaction)`` method — the AureliaFeed in
+        # heimdall.chat.aurelia — or any callable taking the
+        # interaction. None (the default) = no feed, and the
+        # watcher behaves exactly as before HR-006.
+        self.aurelia_feed = aurelia_feed
         self._clock = clock
         self._socket_factory = socket_factory or self._default_factory
 
@@ -300,7 +315,44 @@ class ChatWatcher:
             self.history.append(entry)
             self._inbox.append(entry)
             drained.append(entry)
+            # HR-006: the dual feed fires only after the entry
+            # has landed in the record, and is failure-isolated
+            # (see _feed_aurelia) — Aurelia is never a gate.
+            self._feed_aurelia(entry)
         return drained
+
+    def _feed_aurelia(self, entry: Interaction) -> None:
+        """Hand one classified interaction to the Aurelia plug.
+
+        Never raises, whatever the plug does: the plug's own law
+        (heimdall.chat.aurelia) is already to swallow its
+        failures, and this wrapper is the second layer, so even
+        a plug that violates that contract — or is not a plug at
+        all — is logged and swallowed instead of breaking the
+        drain for this or any later interaction.
+        """
+        plug = self.aurelia_feed
+        if plug is None:
+            return
+        try:
+            feed = getattr(plug, "feed", None)
+            if callable(feed):
+                feed(entry)
+            elif callable(plug):
+                plug(entry)
+            else:
+                logger.warning(
+                    "Aurelia feed: plug %r has no feed() and is not "
+                    "callable; interaction not posted",
+                    plug,
+                )
+        except Exception as exc:  # noqa: BLE001 — isolation law: Aurelia must never raise into the watcher
+            logger.warning(
+                "Aurelia feed: plug raised for %s interaction; "
+                "swallowed, mind feed unaffected: %s",
+                entry.channel,
+                exc,
+            )
 
     # -- state machine --------------------------------------------------
     def step(self) -> None:

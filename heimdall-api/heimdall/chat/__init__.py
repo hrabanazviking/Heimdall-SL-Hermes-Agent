@@ -27,8 +27,23 @@ watcher that checks every five seconds for interactions on both.
   ``contextual`` / ``ambient``, default ``ambient``) set by the
   watcher at classification time under the rules and the
   exchange-state machine in :mod:`heimdall.chat.classification`.
+- HR-006 Aurelia dual feed — :class:`AureliaFeed`
+  (:mod:`heimdall.chat.aurelia`), wired into the watcher as the
+  optional ``aurelia_feed`` plug, POSTs every classified
+  interaction to Aurelia's ``/event`` as ``sl.im`` / ``sl.chat`` /
+  ``sl.group_im`` (source ``"heimdall"``, base URL configurable
+  via constructor or ``HEIMDALL_AURELIA_URL``). Failure-isolated:
+  a failed post is logged and never blocks the mind feed.
 """
 
+from .aurelia import (
+    AURELIA_SOURCE,
+    AURELIA_URL_ENV_VAR,
+    CHANNEL_EVENT_TYPES,
+    DEFAULT_AURELIA_URL,
+    AureliaFeed,
+    build_aurelia_event,
+)
 from .channels import (
     AMBIENT,
     CHANNELS,
@@ -62,10 +77,14 @@ from .watcher import (
 
 __all__ = [
     "AMBIENT",
+    "AURELIA_SOURCE",
+    "AURELIA_URL_ENV_VAR",
     "CHANNELS",
+    "CHANNEL_EVENT_TYPES",
     "CHECK_INTERVAL_S",
     "CLASSIFICATIONS",
     "CONTEXTUAL",
+    "DEFAULT_AURELIA_URL",
     "DEFAULT_SELF_NAME",
     "DIRECT",
     "EVENT_CHANNELS",
@@ -76,6 +95,7 @@ __all__ = [
     "NAMED",
     "RECONNECT_BACKOFF_INITIAL_S",
     "RECONNECT_BACKOFF_MAX_S",
+    "AureliaFeed",
     "ChatRouter",
     "ChatService",
     "ChatWatcher",
@@ -84,6 +104,7 @@ __all__ = [
     "Interaction",
     "KnownAvatars",
     "SendResult",
+    "build_aurelia_event",
     "exchange_key",
     "find_settlement_candidate",
     "matches_settlement",
