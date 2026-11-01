@@ -22,16 +22,33 @@ watcher that checks every five seconds for interactions on both.
   ``ChatWatcher.record_send_result`` (wire it as the service's
   ``on_send``) settles exactly one debt per Core-confirmed send
   under the matching rules in :mod:`heimdall.chat.debt`.
+- HR-005 addressed-to classification — every ``Interaction``
+  carries a ``classification`` stamp (``direct`` / ``named`` /
+  ``contextual`` / ``ambient``, default ``ambient``) set by the
+  watcher at classification time under the rules and the
+  exchange-state machine in :mod:`heimdall.chat.classification`.
 """
 
 from .channels import (
+    AMBIENT,
     CHANNELS,
+    CLASSIFICATIONS,
+    CONTEXTUAL,
+    DIRECT,
     EVENT_CHANNELS,
     GROUP_IM,
     IM,
     LOCAL_CHAT,
+    NAMED,
     Interaction,
     KnownAvatars,
+)
+from .classification import (
+    DEFAULT_SELF_NAME,
+    EXCHANGE_INACTIVITY_WINDOW_S,
+    ExchangeTracker,
+    exchange_key,
+    mentions_self_name,
 )
 from .debt import find_settlement_candidate, matches_settlement
 from .service import ChatRouter, ChatService, SendResult
@@ -44,21 +61,31 @@ from .watcher import (
 )
 
 __all__ = [
+    "AMBIENT",
     "CHANNELS",
     "CHECK_INTERVAL_S",
+    "CLASSIFICATIONS",
+    "CONTEXTUAL",
+    "DEFAULT_SELF_NAME",
+    "DIRECT",
     "EVENT_CHANNELS",
+    "EXCHANGE_INACTIVITY_WINDOW_S",
     "GROUP_IM",
     "IM",
     "LOCAL_CHAT",
+    "NAMED",
     "RECONNECT_BACKOFF_INITIAL_S",
     "RECONNECT_BACKOFF_MAX_S",
     "ChatRouter",
     "ChatService",
     "ChatWatcher",
+    "ExchangeTracker",
     "GapRecord",
     "Interaction",
     "KnownAvatars",
     "SendResult",
+    "exchange_key",
     "find_settlement_candidate",
     "matches_settlement",
+    "mentions_self_name",
 ]
