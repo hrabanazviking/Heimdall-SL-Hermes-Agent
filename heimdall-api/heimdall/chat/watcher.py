@@ -21,6 +21,11 @@ that nothing conversational falls on the floor unnoticed:
 - The mind asks :meth:`ChatWatcher.pending_interactions` for what
   is new; asking consumes, so an interaction is handed over once.
   Everything classified is also kept in ``history`` for audit.
+- Every drained line is stamped with its HR-005 addressed-to
+  classification (``direct`` / ``named`` / ``contextual`` /
+  ``ambient``; rules and the exchange-state machine live in
+  :mod:`heimdall.chat.classification`). The stamp is set here, at
+  classification time, from the line's arrival time.
 - Speakers are learned into :class:`KnownAvatars` as a side effect
   of observation — name <-> UUID pairs from real events only.
 - When the events socket drops, the watcher reconnects with
@@ -56,6 +61,11 @@ from typing import Any
 from ..core.ipc_client import DEFAULT_EVENT_SOCKET
 from ..core.models import SeamEvent, parse_ndjson_line
 from .channels import EVENT_CHANNELS, Interaction, KnownAvatars
+from .classification import (
+    DEFAULT_SELF_NAME,
+    EXCHANGE_INACTIVITY_WINDOW_S,
+    ExchangeTracker,
+)
 from .debt import find_settlement_candidate
 
 # The check cadence Volmarr ordered: drain and classify every 5 s.
@@ -118,9 +128,20 @@ class ChatWatcher:
         socket_factory: Callable[[], Any] | None = None,
         clock: Callable[[], float] = time.monotonic,
         check_interval_s: float = CHECK_INTERVAL_S,
+        self_name: str = DEFAULT_SELF_NAME,
+        exchange_window_s: float = EXCHANGE_INACTIVITY_WINDOW_S,
     ) -> None:
         self.event_socket = event_socket
         self.check_interval_s = float(check_interval_s)
+        # HR-005 addressed-to classification configuration: whose
+        # name makes a line ``named``, and how long an exchange
+        # stays open without a refreshing line (see
+        # heimdall.chat.classification for the rules).
+        self.self_name = str(self_name)
+        self.exchange_window_s = float(exchange_window_s)
+        self.exchange_tracker = ExchangeTracker(
+            self_name=self.self_name, window_s=self.exchange_window_s
+        )
         self._clock = clock
         self._socket_factory = socket_factory or self._default_factory
 
@@ -251,14 +272,30 @@ class ChatWatcher:
                 continue
             self.known_avatars.learn(name, uuid)
             group_uuid = payload.get("group_uuid") or payload.get("group_id")
+            from_name = None if name is None else str(name)
+            from_uuid = None if uuid is None else str(uuid)
+            group_uuid = None if group_uuid is None else str(group_uuid)
+            # HR-005: stamp addressed-to at classification time.
+            # The tracker's clock is the line's arrival time, so
+            # exchange expiry follows when lines were said, not
+            # when this drain happened to run.
+            classification = self.exchange_tracker.classify(
+                channel=channel,
+                msg=str(text),
+                from_uuid=from_uuid,
+                from_name=from_name,
+                group_uuid=group_uuid,
+                now=arrived_at,
+            )
             entry = Interaction(
                 channel=channel,
-                from_name=None if name is None else str(name),
-                from_uuid=None if uuid is None else str(uuid),
+                from_name=from_name,
+                from_uuid=from_uuid,
                 msg=str(text),
                 timestamp=_payload_timestamp(payload),
                 received_at=arrived_at,
-                group_uuid=None if group_uuid is None else str(group_uuid),
+                group_uuid=group_uuid,
+                classification=classification,
             )
             self.history.append(entry)
             self._inbox.append(entry)

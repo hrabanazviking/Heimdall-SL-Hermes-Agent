@@ -28,6 +28,29 @@ GROUP_IM = "group_chat"
 
 CHANNELS = frozenset({LOCAL_CHAT, IM, GROUP_IM})
 
+# Addressed-to classification (HR-005) — how directly a line is
+# addressed to her, stamped on every Interaction by the watcher at
+# classification time (the state machine lives in
+# heimdall.chat.classification):
+#
+# - DIRECT: the line is an IM — private speech to her by
+#   construction, always addressed.
+# - NAMED: the text mentions her name (local/group can be named
+#   too; an IM that mentions her is still DIRECT — IM wins).
+# - CONTEXTUAL: the line continues an open exchange with the same
+#   speaker on the same channel (bare "you"-continuations count).
+# - AMBIENT: none of the above — overheard conversation, not
+#   addressed to her. This is the default, so Interactions built
+#   outside the watcher (fixtures, older records) read honestly as
+#   unclassified-ambient rather than claiming an address they
+#   never earned.
+DIRECT = "direct"
+NAMED = "named"
+CONTEXTUAL = "contextual"
+AMBIENT = "ambient"
+
+CLASSIFICATIONS = frozenset({DIRECT, NAMED, CONTEXTUAL, AMBIENT})
+
 # Canonical seam event name -> chat channel. Events whose canonical
 # name is absent here are not conversation and never enter the chat
 # inbox (the watcher counts them, it does not guess at them).
@@ -57,6 +80,12 @@ class Interaction:
     # it (HR-004: debt settlement for a group must name its group —
     # a group send may never settle another group's debt).
     group_uuid: str | None = None
+    # HR-005 addressed-to stamp (DIRECT | NAMED | CONTEXTUAL |
+    # AMBIENT), set by the watcher when it classifies the line.
+    # Defaults to AMBIENT for backwards compatibility: an
+    # Interaction constructed anywhere else has not been shown to
+    # be addressed to her, and ambient is the honest default.
+    classification: str = AMBIENT
 
 
 class KnownAvatars:
