@@ -34,6 +34,12 @@ watcher that checks every five seconds for interactions on both.
   ``sl.group_im`` (source ``"heimdall"``, base URL configurable
   via constructor or ``HEIMDALL_AURELIA_URL``). Failure-isolated:
   a failed post is logged and never blocks the mind feed.
+- HR-007 interim chain hardening — :mod:`heimdall.chat.integrity`
+  holds the offline-built integrity machinery for the interim
+  chain: a chain-checksummed append-only record store, an atomic
+  checksummed state store with previous-good fallback, and the
+  pure dead-listener detector. Not wired into the live hook or
+  the laptop evtcap log yet (attended/device step).
 """
 
 from .aurelia import (
@@ -66,6 +72,19 @@ from .classification import (
     mentions_self_name,
 )
 from .debt import find_settlement_candidate, matches_settlement
+from .integrity import (
+    DEFAULT_DEAD_LISTENER_THRESHOLD_S,
+    GENESIS_CHECKSUM,
+    AtomicStateStore,
+    ChecksummedRecordStore,
+    CorruptionReport,
+    DeadListenerAlarm,
+    DeadListenerMonitor,
+    IntegrityError,
+    StateLoadResult,
+    VerifiedRead,
+    is_listener_stale,
+)
 from .service import ChatRouter, ChatService, SendResult
 from .watcher import (
     CHECK_INTERVAL_S,
@@ -96,17 +115,28 @@ __all__ = [
     "RECONNECT_BACKOFF_INITIAL_S",
     "RECONNECT_BACKOFF_MAX_S",
     "AureliaFeed",
+    "AtomicStateStore",
     "ChatRouter",
     "ChatService",
     "ChatWatcher",
+    "ChecksummedRecordStore",
+    "CorruptionReport",
+    "DeadListenerAlarm",
+    "DeadListenerMonitor",
     "ExchangeTracker",
     "GapRecord",
+    "IntegrityError",
     "Interaction",
     "KnownAvatars",
     "SendResult",
+    "StateLoadResult",
+    "VerifiedRead",
     "build_aurelia_event",
     "exchange_key",
     "find_settlement_candidate",
+    "is_listener_stale",
     "matches_settlement",
     "mentions_self_name",
+    "DEFAULT_DEAD_LISTENER_THRESHOLD_S",
+    "GENESIS_CHECKSUM",
 ]
