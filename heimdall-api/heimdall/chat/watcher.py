@@ -56,6 +56,7 @@ from typing import Any
 from ..core.ipc_client import DEFAULT_EVENT_SOCKET
 from ..core.models import SeamEvent, parse_ndjson_line
 from .channels import EVENT_CHANNELS, Interaction, KnownAvatars
+from .debt import find_settlement_candidate
 
 # The check cadence Volmarr ordered: drain and classify every 5 s.
 CHECK_INTERVAL_S = 5.0
@@ -128,6 +129,12 @@ class ChatWatcher:
         self._staged: list[tuple[SeamEvent, float]] = []
         self._inbox: list[Interaction] = []
         self.history: list[Interaction] = []
+        # HR-004: indices into ``history`` whose debt a
+        # Core-confirmed send has settled (see
+        # heimdall.chat.debt for the matching law). History itself
+        # is append-only, so an index is a stable identity — two
+        # textually identical interactions are two distinct debts.
+        self._settled: set[int] = set()
         self.known_avatars = KnownAvatars()
         self.gaps: list[GapRecord] = []
         # Fail-closed audit counters — nothing is silently dropped.
@@ -243,6 +250,7 @@ class ChatWatcher:
                 self.unattributed_events += 1
                 continue
             self.known_avatars.learn(name, uuid)
+            group_uuid = payload.get("group_uuid") or payload.get("group_id")
             entry = Interaction(
                 channel=channel,
                 from_name=None if name is None else str(name),
@@ -250,6 +258,7 @@ class ChatWatcher:
                 msg=str(text),
                 timestamp=_payload_timestamp(payload),
                 received_at=arrived_at,
+                group_uuid=None if group_uuid is None else str(group_uuid),
             )
             self.history.append(entry)
             self._inbox.append(entry)
@@ -277,6 +286,61 @@ class ChatWatcher:
     def peek_pending(self) -> list[Interaction]:
         """The pending interactions, without consuming them."""
         return list(self._inbox)
+
+    # -- the debt surface (HR-004) ---------------------------------------
+    def unanswered_interactions(
+        self, channel: str | None = None
+    ) -> list[Interaction]:
+        """What is owed, oldest first — asking settles/consumes nothing.
+
+        The first-class unanswered-set query (HR-004): derived from
+        the conversation record (``history``) minus the debts a
+        Core-confirmed send has settled. Unlike
+        :meth:`pending_interactions` (a consuming handoff), this can
+        be asked repeatedly and returns the same set until a verified
+        send settles part of it — handing an interaction to a mind
+        does not answer it, and consuming the inbox changes nothing
+        here.
+        """
+        return [
+            entry
+            for idx, entry in enumerate(self.history)
+            if idx not in self._settled
+            and (channel is None or entry.channel == channel)
+        ]
+
+    def record_send_result(self, result: Any) -> Interaction | None:
+        """Settle one debt from a send result; None when nothing settles.
+
+        The settlement door (HR-004, receipts law): ``result`` is a
+        :class:`~heimdall.chat.service.SendResult` (duck-typed: it
+        needs ``ok``, ``channel`` and ``target_uuid``). A result
+        with ``ok`` False — blocked, refused, governor-denied —
+        settles NOTHING and returns None. A confirmed send settles
+        exactly the oldest matching owed interaction under the
+        channel-exact, target-exact rules in
+        :mod:`heimdall.chat.debt`; when nothing matches, the send
+        settles nothing and earns no credit against future debt.
+        Wire it as ``ChatService(..., on_send=watcher.record_send_result)``
+        or call it with each result by hand.
+        """
+        if not getattr(result, "ok", False):
+            return None
+        owed = self.unanswered_interactions()
+        candidate = find_settlement_candidate(
+            owed,
+            channel=getattr(result, "channel", None),
+            target_uuid=getattr(result, "target_uuid", None),
+        )
+        if candidate is None:
+            return None
+        # Identity is position in the record, not text: settle the
+        # exact history slot the candidate came from.
+        for idx, entry in enumerate(self.history):
+            if idx not in self._settled and entry is candidate:
+                self._settled.add(idx)
+                return entry
+        return None  # pragma: no cover — candidate came from history
 
     @property
     def staged_count(self) -> int:

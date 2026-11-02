@@ -17,6 +17,11 @@ watcher that checks every five seconds for interactions on both.
 - :class:`Interaction` / :class:`KnownAvatars` — the channel
   vocabulary and identity bookkeeping both sides share
   (:mod:`heimdall.chat.channels`).
+- HR-004 debt surface — ``ChatWatcher.unanswered_interactions()``
+  asks what is owed without consuming anything, and
+  ``ChatWatcher.record_send_result`` (wire it as the service's
+  ``on_send``) settles exactly one debt per Core-confirmed send
+  under the matching rules in :mod:`heimdall.chat.debt`.
 """
 
 from .channels import (
@@ -28,6 +33,7 @@ from .channels import (
     Interaction,
     KnownAvatars,
 )
+from .debt import find_settlement_candidate, matches_settlement
 from .service import ChatRouter, ChatService, SendResult
 from .watcher import (
     CHECK_INTERVAL_S,
@@ -53,4 +59,6 @@ __all__ = [
     "Interaction",
     "KnownAvatars",
     "SendResult",
+    "find_settlement_candidate",
+    "matches_settlement",
 ]
